@@ -1,0 +1,38 @@
+---
+- name: Initial Server Hardening for Ubuntu
+  hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Update and upgrade apt packages
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Ensure UFW is installed
+      ansible.builtin.apt:
+        name: ufw
+        state: present
+
+    - name: Allow SSH before enabling UFW
+      ansible.builtin.ufw:
+        rule: allow
+        name: OpenSSH
+
+    - name: Enable UFW
+      ansible.builtin.ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+
+    - name: Ensure system is using the latest CA certificates
+      ansible.builtin.apt:
+        name: ca-certificates
+        state: latest
+
+  handlers:
+    - name: restart sshd
+      ansible.builtin.service:
+        name: ssh
+        state: restarted
