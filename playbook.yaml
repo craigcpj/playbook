@@ -1,6 +1,6 @@
 ---
 - name: Initial Server Hardening for Ubuntu
-  hosts: all
+  hosts: localhost
   become: yes
 
   tasks:
