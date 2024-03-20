@@ -1,6 +1,12 @@
 ---
 - name: Initial Server Hardening for Ubuntu
   hosts: all
+  vars:
+    ntp_servers:
+      - 0.pool.ntp.org
+      - 1.pool.ntp.org
+      - 2.pool.ntp.org
+      - 3.pool.ntp.org
 
   tasks:
     - name: Update and upgrade apt packages
@@ -34,39 +40,31 @@
         state: stopped
         name: systemd-timesyncd
 
-    - name: Install and configure Chrony
-      vars:
-        ntp_servers:
-          - 0.pool.ntp.org
-          - 1.pool.ntp.org
-          - 2.pool.ntp.org
-          - 3.pool.ntp.org
-      tasks:
-        - name: Install Chrony
-          ansible.builtin.package:
-            name: chrony
-            state: present
+    - name: Install Chrony
+      ansible.builtin.package:
+        name: chrony
+        state: present
 
-        - name: Remove default NTP servers
-          ansible.builtin.lineinfile:
-            path: /etc/chrony/chrony.conf
-            regexp: "^server "
-            line: "# Commented out by Ansible"
-            state: absent
+    - name: Remove default NTP servers
+      ansible.builtin.lineinfile:
+        path: /etc/chrony/chrony.conf
+        regexp: "^server "
+        line: "# Commented out by Ansible"
+        state: absent
 
-        - name: Add specified NTP servers to chrony.conf
-          ansible.builtin.lineinfile:
-            path: /etc/chrony/chrony.conf
-            line: "server {{ item }} iburst"
-            insertafter: EOF
-          loop: "{{ ntp_servers }}"
-          notify: restart chrony
+    - name: Add specified NTP servers to chrony.conf
+      ansible.builtin.lineinfile:
+        path: /etc/chrony/chrony.conf
+        line: "server {{ item }} iburst"
+        insertafter: EOF
+      loop: "{{ ntp_servers }}"
+      notify: restart chrony
 
-        - name: Ensure Chrony is enabled and running
-          ansible.builtin.service:
-            name: chrony
-            state: started
-            enabled: yes
+    - name: Ensure Chrony is enabled and running
+      ansible.builtin.service:
+        name: chrony
+        state: started
+        enabled: yes
 
   handlers:
     - name: restart sshd
