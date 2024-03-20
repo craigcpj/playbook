@@ -29,6 +29,11 @@
       ansible.builtin.apt:
         name: ca-certificates
         state: latest
+        
+    - name: Make sure NTP service is running
+      ansible.builtin.systemd:
+        state: started
+        name: systemd-timesyncd
 
   handlers:
     - name: restart sshd
