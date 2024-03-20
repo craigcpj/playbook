@@ -35,10 +35,10 @@
         name: ca-certificates
         state: latest
 
-    - name: Make sure timesyncd service is running
+    - name: Ensure systemd-timesyncd service is stopped
       ansible.builtin.systemd:
-        state: stopped
         name: systemd-timesyncd
+        state: stopped
 
     - name: Install Chrony
       ansible.builtin.package:
@@ -67,11 +67,6 @@
         enabled: yes
 
   handlers:
-    - name: restart sshd
-      ansible.builtin.service:
-        name: ssh
-        state: restarted
-
     - name: restart chrony
       ansible.builtin.service:
         name: chrony
