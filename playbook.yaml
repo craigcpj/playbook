@@ -9,7 +9,7 @@
         update_cache: yes
         upgrade: dist
 
-    - name: Ensure UFW is installed
+    - name: Insure UFW is installed
       ansible.builtin.apt:
         name: ufw
         state: present
@@ -25,7 +25,7 @@
         policy: deny
         direction: incoming
 
-    - name: Ensure system is using the latest CA certificates
+    - name: Insure system is using the latest CA certificates
       ansible.builtin.apt:
         name: ca-certificates
         state: latest
