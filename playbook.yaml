@@ -81,12 +81,6 @@
         group: root
         mode: '0440'
       become: yes
-
-    - name: Ensure SSH key is added
-      ansible.builtin.authorized_key:
-        user: your_username
-        state: present
-        key: "{{ lookup('file', '/path/to/your/public/key.pub') }}"
     
     - name: Allow user to execute sudo commands without a password
       ansible.builtin.copy:
