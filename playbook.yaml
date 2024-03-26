@@ -24,6 +24,13 @@
         rule: allow
         name: OpenSSH
 
+    - name: Add SSH key for AWX
+      ansible.builtin.authorized_key:
+        user: ubuntu
+        state: present
+        key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINQN0xMG31YYdl4ErPfelk7qI5Xd2WqjHiH6vf5CeC6f awx_gitlab"
+
+
     - name: Enable UFW
       ansible.builtin.ufw:
         state: enabled
