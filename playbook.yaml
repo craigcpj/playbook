@@ -72,6 +72,16 @@
         name: chrony
         state: started
         enabled: yes
+    - name: Allow user to execute sudo commands without a password
+      ansible.builtin.copy:
+        dest: "/etc/sudoers.d/your_username"
+        content: "your_username ALL=(ALL) NOPASSWD:ALL"
+        validate: '/usr/sbin/visudo -cf %s'
+        owner: root
+        group: root
+        mode: '0440'
+      become: yes
+
 
   handlers:
     - name: restart chrony
